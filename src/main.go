@@ -9,6 +9,7 @@ import (
 	"io"
 	"log"
 	"mariadb"
+	"network"
 	"os"
 	"router"
 	"time"
@@ -32,7 +33,8 @@ type logFileManage struct {
 //------------------------------------------------------------------------------
 var logMng logFileManage
 var mlog genLib.OLog
-var mdb mariadb.MariaDB
+
+//var mdb mariadb.MariaDB
 
 //------------------------------------------------------------------------------
 // Global
@@ -55,8 +57,8 @@ func initRouter() *gin.Engine {
 	r1 := r.Group("/api1")
 	r1.Use(LoggerFileCheck(), gin.Logger())
 	{
-		fmt.Println("login(1)")
 		r1.GET("/login", router.Login) // GET => /api1/login
+		r1.GET("/group", router.Group) // GET => /api1/group
 	}
 
 	return r
@@ -96,16 +98,18 @@ func initVariable() {
 	logMng.dd = 0
 }
 
+func initRoutine() {
+	network.Routine()
+}
+
 func DbGetGroup() {
 
 	global.DBlog.Write("main", "DbGetGroup")
 
 	//InitDBSrc(user string, passwd string, dbName string, hostAddr string) {
 
-	mdb := mariadb.InitDBSrc("dev", "dev", "sbrt_test", "192.168.1.74")
-
 	var sData []data.Group
-	ok, sData := mdb.GetGroup(sData)
+	ok, sData := mariadb.Mdb.GetGroup(sData)
 	if ok {
 		for idx := 0; idx < len(sData); idx++ {
 			fmt.Println("ID : ", sData[idx].GRP_ID, "NM : ", sData[idx].GRP_NM)
@@ -126,14 +130,10 @@ func DbGetGroup() {
 
 func main() {
 	mlog := genLib.InitOLog("../log", "MAIN")
+	mlog.Write("main", "start")
 
-	mlog.Write("test", "hello1")
+	initRoutine()
 
-	var bytes []byte
-	bytes = []byte{1, 2, 3}
-	mlog.Dump("TEST", bytes)
-
-	DbGetGroup()
 	//initVariable()
 	checkLogFile()
 	r := initRouter()

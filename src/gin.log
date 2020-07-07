@@ -425,3 +425,195 @@
 [GIN] 2020/07/06 - 18:10:44 | 200 |     11.0099ms |             ::1 | GET      "/api1/login"
 [GIN] 2020/07/06 - 18:10:44 | 200 |     10.9856ms |             ::1 | GET      "/api1/login"
 [GIN] 2020/07/06 - 18:10:44 | 200 |     10.9856ms |             ::1 | GET      "/api1/login"
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN] 2020/07/07 - 13:50:06 | 200 |      11.968ms |             ::1 | GET      "/api1/login"
+[GIN] 2020/07/07 - 13:50:06 | 200 |      11.968ms |             ::1 | GET      "/api1/login"
+[GIN] 2020/07/07 - 13:50:06 | 404 |            0s |             ::1 | GET      "/favicon.ico"
+[GIN] 2020/07/07 - 13:50:09 | 200 |      13.968ms |             ::1 | GET      "/api1/login"
+[GIN] 2020/07/07 - 13:50:09 | 200 |      13.968ms |             ::1 | GET      "/api1/login"
+[GIN] 2020/07/07 - 13:50:09 | 200 |     17.3662ms |             ::1 | GET      "/api1/login"
+[GIN] 2020/07/07 - 13:50:09 | 200 |     18.3653ms |             ::1 | GET      "/api1/login"
+[GIN] 2020/07/07 - 13:50:09 | 200 |      8.9752ms |             ::1 | GET      "/api1/login"
+[GIN] 2020/07/07 - 13:50:09 | 200 |      9.9729ms |             ::1 | GET      "/api1/login"
+[GIN] 2020/07/07 - 13:50:09 | 200 |     20.9429ms |             ::1 | GET      "/api1/login"
+[GIN] 2020/07/07 - 13:50:09 | 200 |     21.9422ms |             ::1 | GET      "/api1/login"
+[GIN] 2020/07/07 - 13:50:10 | 200 |      9.9735ms |             ::1 | GET      "/api1/login"
+[GIN] 2020/07/07 - 13:50:10 | 200 |     10.9711ms |             ::1 | GET      "/api1/login"
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN] 2020/07/07 - 13:52:31 | 200 |     10.9394ms |             ::1 | GET      "/api1/login"
+[GIN] 2020/07/07 - 13:52:31 | 200 |      11.968ms |             ::1 | GET      "/api1/login"
+[GIN] 2020/07/07 - 13:52:32 | 200 |      10.943ms |             ::1 | GET      "/api1/login"
+[GIN] 2020/07/07 - 13:52:32 | 200 |     11.9409ms |             ::1 | GET      "/api1/login"
+[GIN] 2020/07/07 - 13:52:35 | 200 |      11.969ms |             ::1 | GET      "/api1/group"
+[GIN] 2020/07/07 - 13:52:35 | 200 |      11.969ms |             ::1 | GET      "/api1/group"
+[GIN] 2020/07/07 - 13:52:36 | 200 |     10.9619ms |             ::1 | GET      "/api1/group"
+[GIN] 2020/07/07 - 13:52:36 | 200 |     10.9619ms |             ::1 | GET      "/api1/group"
+[GIN] 2020/07/07 - 13:52:37 | 200 |     16.9775ms |             ::1 | GET      "/api1/group"
+[GIN] 2020/07/07 - 13:52:37 | 200 |     23.9588ms |             ::1 | GET      "/api1/group"
+[GIN] 2020/07/07 - 13:52:37 | 200 |     10.9737ms |             ::1 | GET      "/api1/group"
+[GIN] 2020/07/07 - 13:52:37 | 200 |     10.9737ms |             ::1 | GET      "/api1/group"
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api1/login               --> router.Login (5 handlers)
+[GIN-debug] GET    /api1/group               --> router.Group (5 handlers)
+[GIN-debug] Listening and serving HTTP on :5000

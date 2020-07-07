@@ -12,7 +12,7 @@ import (
 
 //var DBlog *genLib.OLog = genLib.InitOLog("../log", "MARIDB")
 
-var mdb *mariadb.MariaDB = mariadb.InitDBSrc("dev", "dev", "sbrt_test", "192.168.1.74")
+//var mdb *mariadb.MariaDB = mariadb.InitDBSrc("dev", "dev", "sbrt_test", "192.168.1.74")
 
 // post : /login
 func Login(c *gin.Context) {
@@ -29,7 +29,7 @@ func Login(c *gin.Context) {
 	// mdb := mariadb.InitDBSrc("dev", "dev", "sbrt_test", "192.168.1.74")
 
 	var sData []data.Group
-	ok, sData := mdb.GetGroup(sData)
+	ok, sData := mariadb.Mdb.GetGroup(sData)
 	if ok {
 		for idx := 0; idx < len(sData); idx++ {
 			fmt.Println("ID : ", sData[idx].GRP_ID, "NM : ", sData[idx].GRP_NM)

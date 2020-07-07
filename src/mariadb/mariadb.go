@@ -13,6 +13,8 @@ type MariaDB struct {
 	user, passwd, dbName, hostAddr string
 }
 
+var Mdb *MariaDB = InitDBSrc("dev", "dev", "sbrt_test", "192.168.1.74")
+
 func InitDBSrc(user string, passwd string, dbName string, hostAddr string) *MariaDB {
 	fmt.Println("InitDBSrc")
 	mdb := MariaDB{}
