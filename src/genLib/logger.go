@@ -72,7 +72,8 @@ func (lg OLog) Write(str ...string) {
 }
 
 func (lg OLog) Dump(stamp string, bytes []byte, length int) {
-	message := lg.genDateTimeString() + "  " + stamp
+	//message := lg.genDateTimeString() + "  " + stamp + "  [" + string(length) + "]" + "\n"
+	message := fmt.Sprintf("%s  %s  [%d]\n", lg.genDateTimeString(), stamp, length)
 
 	//for idx := 0; idx < len(bytes); idx++ {
 	for idx := 0; idx < length; idx++ {

@@ -83,6 +83,13 @@ func InitComm(name string, port string, ipAddr string) TCPinfo {
 	return tcpC
 }
 
+func minInt(a int, b int) int {
+	if a > b {
+		return b
+	}
+	return a
+}
+
 //---------------------------------------------------------------------------
 // Method
 //---------------------------------------------------------------------------
@@ -97,6 +104,7 @@ func Connect(ch_connected chan bool) {
 	// connect
 	conn, err := net.Dial("tcp", netSrc)
 	TcpClient.conn = conn
+	resetRxStatus()
 
 	if err != nil {
 		global.Tcplog.Write(err.Error())
@@ -119,6 +127,7 @@ func resetRxStatus() {
 }
 
 func SetRxStatus(rxState int, readCount int) {
+
 	TcpClient.rx_status = rxState
 	TcpClient.m_index += readCount
 
@@ -129,10 +138,14 @@ func SetRxStatus(rxState int, readCount int) {
 
 func rxHandler(data []byte, length int) {
 
+	global.Tcplog.Dump("RX", data, length)
+	log.Println("rxHandler")
 	// check header
-	for idx := 0; idx < MIN_PACKET && idx < length; idx++ {
+	for idx := 0; idx < length; idx++ {
 
 		m_rxState := TcpClient.rx_status
+
+		//log.Println("m_rxState : ", m_rxState)
 
 		switch m_rxState {
 		case RXST_STX:
@@ -141,7 +154,9 @@ func rxHandler(data []byte, length int) {
 				SetRxStatus(RXST_SIZE1, 1)
 
 			} else {
-				SetRxStatus(RXST_STX, 0)
+				TcpClient.m_data = append(TcpClient.m_data, data[idx])
+				SetRxStatus(RXST_SIZE1, 1)
+				//SetRxStatus(RXST_STX, 0)
 			}
 		case RXST_SIZE1:
 			TcpClient.m_data = append(TcpClient.m_data, data[idx])
@@ -149,8 +164,8 @@ func rxHandler(data []byte, length int) {
 
 		case RXST_SIZE2:
 			TcpClient.m_data = append(TcpClient.m_data, data[idx])
-			dataLen := genLib.GetNumber(TcpClient.m_data, LCPT_SIZE2, 2, genLib.ED_BIG)
-			TcpClient.m_length = dataLen
+			dataLen := genLib.GetNumber(TcpClient.m_data, LCPT_SIZE1, 2, genLib.ED_BIG)
+			TcpClient.m_length = dataLen + MIN_PACKET
 			log.Println("datalen : ", dataLen)
 			SetRxStatus(RXST_SEQ, 1)
 
@@ -164,15 +179,25 @@ func rxHandler(data []byte, length int) {
 
 		case RXST_DATA:
 			m_index := TcpClient.m_index
-			//remain
-			//request
 
-			if m_index < length {
-				TcpClient.m_data = append(TcpClient.m_data, data[m_index+1:length]...) // m_index + 1 ~ length-1
-				readCnt := length - m_index
-				SetRxStatus(RXST_DATA, readCnt)
+			remainCount := length - idx
+			requestCount := TcpClient.m_length - m_index
+			requestCount = minInt(requestCount, remainCount)
+
+			lastIdx := idx + requestCount
+			TcpClient.m_data = append(TcpClient.m_data, data[idx:lastIdx]...)
+			SetRxStatus(RXST_DATA, requestCount)
+			idx += requestCount - 1
+
+			if m_index == TcpClient.m_length {
+				log.Println("(1)", m_index, TcpClient.m_length)
 				msgHandler()
-			} else {
+				SetRxStatus(RXST_STX, 0)
+			} else if m_index < TcpClient.m_length {
+				log.Println("(2)", m_index, TcpClient.m_length)
+				continue
+			} else if m_index > TcpClient.m_length {
+				log.Println("(3)", m_index, TcpClient.m_length)
 				SetRxStatus(RXST_STX, 0)
 			}
 		}
@@ -181,10 +206,24 @@ func rxHandler(data []byte, length int) {
 
 func msgHandler() {
 	// opcode별로 처리
+	log.Println("msgHandler", TcpClient.m_length)
+	global.Tcplog.Dump("MSG HND", TcpClient.m_data, TcpClient.m_length)
+	code := TcpClient.m_data[LCPT_OPCODE]
+
+	switch code {
+	case LCOPCD_STATE:
+		log.Println("process opcode : %02X", code)
+		processLcStatus()
+	default:
+		log.Println("Undefined opcode %02X", code)
+
+	}
 
 }
 
-func processLcStatus(data []byte, length int) {
+func processLcStatus() {
+	data := TcpClient.m_data[0:]	// copy data
+	
 
 }
 
@@ -198,7 +237,6 @@ func manageRX(ch_connected chan bool, ch_recvdata chan RecvData) {
 
 			data := make([]byte, 1024)
 
-			global.Tcplog.Write("RX 1")
 			n, err := TcpClient.conn.Read(data)
 			if err != nil {
 				log.Println(err)
@@ -206,16 +244,12 @@ func manageRX(ch_connected chan bool, ch_recvdata chan RecvData) {
 				ch_connected <- false
 			}
 
-			global.Tcplog.Write("RX 2")
-
 			rcvData := RecvData{}
 			rcvData.data = data
 			rcvData.length = n
+			rxHandler(data, n)
 
 			ch_recvdata <- rcvData
-
-			global.Tcplog.Dump("RX", data, n)
-			log.Println("server send : ", string(data[:n]))
 		}
 		time.Sleep(time.Duration(100) * time.Millisecond)
 	}
