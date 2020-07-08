@@ -71,10 +71,11 @@ func (lg OLog) Write(str ...string) {
 	lg.logging([]byte(message))
 }
 
-func (lg OLog) Dump(stamp string, bytes []byte) {
+func (lg OLog) Dump(stamp string, bytes []byte, length int) {
 	message := lg.genDateTimeString() + "  " + stamp
 
-	for idx := 0; idx < len(bytes); idx++ {
+	//for idx := 0; idx < len(bytes); idx++ {
+	for idx := 0; idx < length; idx++ {
 		if idx%20 == 0 {
 			if idx != 0 {
 				message += message + "\n"

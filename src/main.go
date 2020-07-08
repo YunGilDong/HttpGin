@@ -133,7 +133,6 @@ func main() {
 	mlog.Write("main", "start")
 
 	initRoutine()
-
 	//initVariable()
 	checkLogFile()
 	r := initRouter()
@@ -146,4 +145,5 @@ func main() {
 	if err != nil {
 		println("Http run fail.. port 5000,,,")
 	}
+
 }
