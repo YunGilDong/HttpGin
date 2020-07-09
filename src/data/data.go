@@ -4,12 +4,12 @@ package data
 // Lc State
 //---------------------------------------------------------------------------
 type LcState struct {
-	oprMode    int
-	conflictSt int
-	lightOffSt int
-	flashSt    int
-	doorSt     int
-	commSt     int
+	OprMode    int
+	ConflictSt int
+	LightOffSt int
+	FlashSt    int
+	DoorSt     int
+	CommSt     int
 }
 
 //---------------------------------------------------------------------------
@@ -32,5 +32,5 @@ type LC struct {
 	LC_ID  int
 	LC_NM  string
 	GRP_ID int
-	state  LcState
+	State  LcState
 }

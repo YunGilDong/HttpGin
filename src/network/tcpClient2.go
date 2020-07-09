@@ -1,12 +1,14 @@
 package network
 
 import (
+	"data"
 	"fmt"
 	"genLib"
 	"global"
 	"log"
 	"net"
 	"time"
+	"trffic_obj"
 )
 
 //---------------------------------------------------------------------------
@@ -139,7 +141,6 @@ func SetRxStatus(rxState int, readCount int) {
 func rxHandler(data []byte, length int) {
 
 	global.Tcplog.Dump("RX", data, length)
-	log.Println("rxHandler")
 	// check header
 	for idx := 0; idx < length; idx++ {
 
@@ -166,7 +167,6 @@ func rxHandler(data []byte, length int) {
 			TcpClient.m_data = append(TcpClient.m_data, data[idx])
 			dataLen := genLib.GetNumber(TcpClient.m_data, LCPT_SIZE1, 2, genLib.ED_BIG)
 			TcpClient.m_length = dataLen + MIN_PACKET
-			log.Println("datalen : ", dataLen)
 			SetRxStatus(RXST_SEQ, 1)
 
 		case RXST_SEQ:
@@ -190,7 +190,6 @@ func rxHandler(data []byte, length int) {
 			idx += requestCount - 1
 
 			if m_index == TcpClient.m_length {
-				log.Println("(1)", m_index, TcpClient.m_length)
 				msgHandler()
 				SetRxStatus(RXST_STX, 0)
 			} else if m_index < TcpClient.m_length {
@@ -206,25 +205,89 @@ func rxHandler(data []byte, length int) {
 
 func msgHandler() {
 	// opcode별로 처리
-	log.Println("msgHandler", TcpClient.m_length)
 	global.Tcplog.Dump("MSG HND", TcpClient.m_data, TcpClient.m_length)
 	code := TcpClient.m_data[LCPT_OPCODE]
 
 	switch code {
 	case LCOPCD_STATE:
-		log.Println("process opcode : %02X", code)
 		processLcStatus()
 	default:
-		log.Println("Undefined opcode %02X", code)
+		log.Printf("Undefined opcode %02X", code)
 
 	}
 
 }
 
 func processLcStatus() {
-	data := TcpClient.m_data[0:]	// copy data
-	
+	lcdata := TcpClient.m_data[0:] // copy data
+	datacount := genLib.GetNumber(lcdata, LCPT_DATA, 2, genLib.ED_BIG)
+	const lcStateSize = 28
+	const STATE_DATA_IDX = LCPT_DATA + 2
 
+	for idx := 0; idx < datacount; idx++ {
+		lcObj := data.LC{}
+
+		delta := 2 // id, group
+		offsetIdx := lcStateSize*idx + STATE_DATA_IDX
+
+		lcObj.LC_ID = int(lcdata[offsetIdx+0])
+		lcObj.GRP_ID = int(lcdata[offsetIdx+1])
+
+		lcObj.State.OprMode = int(lcdata[offsetIdx+delta+0])
+
+		//id, group, opr, conflict, light, flash, doost, commst
+		// log.Printf(" id[%02X] grp[%02X] opr[%02X] status[%02X]   comm[%02X] "
+		// 	, lcObj.LC_ID, lcObj.GRP_ID	, lcdata[offsetIdx+delta+0], lcdata[offsetIdx+delta+3], lcdata[offsetIdx+delta+25])
+
+		log.Printf(" id[%02X] grp[%02X] opr[%02X] status[%02X] comm[%02X]",
+			lcObj.LC_ID,
+			lcObj.GRP_ID,
+			lcdata[offsetIdx+delta+0],
+			lcdata[offsetIdx+delta+3],
+			lcdata[offsetIdx+delta+25])
+
+		// Conflict
+		if lcdata[offsetIdx+delta+3]&0x08 > 0 {
+			log.Println("conflict 1")
+			lcObj.State.ConflictSt = 1
+		} else {
+			log.Println("conflict 0")
+			lcObj.State.ConflictSt = 0
+		}
+
+		// Light
+		if lcdata[offsetIdx+delta+3]&0x04 > 0 {
+			log.Println("Light 1")
+			lcObj.State.LightOffSt = 1
+		} else {
+			log.Println("Light 0")
+			lcObj.State.LightOffSt = 0
+		}
+
+		// Flash
+		if lcdata[offsetIdx+delta+3]&0x02 > 0 {
+			log.Println("Flash 1")
+			lcObj.State.FlashSt = 1
+		} else {
+			log.Println("Flash 0")
+			lcObj.State.FlashSt = 0
+		}
+
+		// Door Status
+		if lcdata[offsetIdx+delta+3]&0x01 > 0 {
+			log.Println("Door 1")
+			lcObj.State.DoorSt = 1
+		} else {
+			log.Println("Door 0")
+			lcObj.State.DoorSt = 0
+		}
+
+		// Comm status
+		lcObj.State.CommSt = int(lcdata[offsetIdx+delta+25])
+
+		// Set Lcobjects
+		trffic_obj.SetLcObjecState(lcObj)
+	}
 }
 
 //---------------------------------------------------------------------------
@@ -272,8 +335,9 @@ func manageTX(ch_connected chan bool, ch_recvdata chan RecvData) {
 
 			// recv message handler
 			select {
-			case rcvdata := <-ch_recvdata:
-				log.Println("manageTX recv data! size : ", rcvdata.length)
+			// case rcvdata := <-ch_recvdata:
+			// 	log.Println("manageTX recv data! size : ", rcvdata.length)
+			case <-ch_recvdata:
 
 			}
 		}

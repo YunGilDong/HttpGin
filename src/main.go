@@ -13,6 +13,7 @@ import (
 	"os"
 	"router"
 	"time"
+	"trffic_obj"
 
 	"github.com/gin-gonic/gin"
 )
@@ -57,8 +58,9 @@ func initRouter() *gin.Engine {
 	r1 := r.Group("/api1")
 	r1.Use(LoggerFileCheck(), gin.Logger())
 	{
-		r1.GET("/login", router.Login) // GET => /api1/login
-		r1.GET("/group", router.Group) // GET => /api1/group
+		r1.GET("/login", router.Login)                       // GET => /api1/login
+		r1.GET("/group", router.Group)                       // GET => /api1/group
+		r1.GET("/lc_state_summary", router.Lc_state_summary) // GET => /api1/lc_state_summary
 	}
 
 	return r
@@ -96,6 +98,8 @@ func initVariable() {
 	logMng.yy = 0
 	logMng.mm = 0
 	logMng.dd = 0
+
+	trffic_obj.InitLcObjects()
 }
 
 func initRoutine() {
@@ -132,8 +136,9 @@ func main() {
 	mlog := genLib.InitOLog("../log", "MAIN")
 	mlog.Write("main", "start")
 
+	initVariable()
 	initRoutine()
-	//initVariable()
+
 	checkLogFile()
 	r := initRouter()
 
