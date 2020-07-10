@@ -4,8 +4,28 @@ import (
 	"data"
 )
 
-func GetLcStateSummary() data.LcStateSummary {
-	lcStats := GetLcObjectsValue()
+var existLcSummary data.LcStateSummary
+
+func initLcSummaray() {
+	existLcSummary = data.LcStateSummary{}
+
+	existLcSummary.LcCount = 0
+	existLcSummary.ScuFixCyc = 0
+	existLcSummary.LocalAct = 0
+	existLcSummary.LocalNonAct = 0
+	existLcSummary.CenterAct = 0
+	existLcSummary.CenterNonAct = 0
+	existLcSummary.KeepPhase = 0
+	existLcSummary.ConflictImpossible = 0
+	existLcSummary.CommError = 0
+	existLcSummary.LightOff = 0
+	existLcSummary.Flash = 0
+	existLcSummary.DoorOpen = 0
+	existLcSummary.Conflict = 0
+}
+
+func GetLcStateSummary() (data.LcStateSummary, bool) {
+	lcStats := GetLcObjectsValue() // 두번쨰 파라미터에 변화 여부 추가??
 
 	lcSummary := data.LcStateSummary{}
 
@@ -50,5 +70,20 @@ func GetLcStateSummary() data.LcStateSummary {
 	lcSummary.DoorOpen = door
 	lcSummary.Conflict = conflict
 
-	return lcSummary
+	var isChanged = false
+	if existLcSummary.CommError != comm {
+		isChanged = true
+	} else if existLcSummary.LightOff != light {
+		isChanged = true
+	} else if existLcSummary.Flash != flash {
+		isChanged = true
+	} else if existLcSummary.DoorOpen != door {
+		isChanged = true
+	} else if existLcSummary.Conflict != conflict {
+		isChanged = true
+	}
+
+	existLcSummary = lcSummary
+
+	return lcSummary, isChanged
 }

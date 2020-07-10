@@ -41,5 +41,5 @@ func SetLcObjecState(lcdata data.LC) {
 	//log.Println(id, lcdata)
 	lcobjs.mapLc[id] = lcdata
 
-	log.Println(lcobjs.mapLc)
+	//log.Println(lcobjs.mapLc)
 }

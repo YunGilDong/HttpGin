@@ -140,7 +140,9 @@ func SetRxStatus(rxState int, readCount int) {
 
 func rxHandler(data []byte, length int) {
 
+	log.Println("rx(1)")
 	global.Tcplog.Dump("RX", data, length)
+	log.Println("rx(2)")
 	// check header
 	for idx := 0; idx < length; idx++ {
 
@@ -184,20 +186,26 @@ func rxHandler(data []byte, length int) {
 			requestCount := TcpClient.m_length - m_index
 			requestCount = minInt(requestCount, remainCount)
 
+			log.Println("(1) idx : ", idx, ">>midx : ", m_index, ">>", remainCount, requestCount)
+
 			lastIdx := idx + requestCount
 			TcpClient.m_data = append(TcpClient.m_data, data[idx:lastIdx]...)
 			SetRxStatus(RXST_DATA, requestCount)
-			idx += requestCount - 1
+			idx += requestCount
+			log.Println("(2) idx : ", idx, ">>midx : ", TcpClient.m_index, ">>", remainCount, requestCount)
 
-			if m_index == TcpClient.m_length {
+			if TcpClient.m_index == TcpClient.m_length {
+				log.Println("msgH(1)")
 				msgHandler()
+				log.Println("msgH(2)")
 				SetRxStatus(RXST_STX, 0)
-			} else if m_index < TcpClient.m_length {
-				log.Println("(2)", m_index, TcpClient.m_length)
+			} else if TcpClient.m_index < TcpClient.m_length {
+				log.Println("(2)", TcpClient.m_index, TcpClient.m_length, "idx : ", idx)
 				continue
-			} else if m_index > TcpClient.m_length {
-				log.Println("(3)", m_index, TcpClient.m_length)
+			} else if TcpClient.m_index > TcpClient.m_length {
+				log.Println("(3)", TcpClient.m_index, TcpClient.m_length)
 				SetRxStatus(RXST_STX, 0)
+				break
 			}
 		}
 	}
@@ -248,37 +256,29 @@ func processLcStatus() {
 
 		// Conflict
 		if lcdata[offsetIdx+delta+3]&0x08 > 0 {
-			log.Println("conflict 1")
 			lcObj.State.ConflictSt = 1
 		} else {
-			log.Println("conflict 0")
 			lcObj.State.ConflictSt = 0
 		}
 
 		// Light
 		if lcdata[offsetIdx+delta+3]&0x04 > 0 {
-			log.Println("Light 1")
 			lcObj.State.LightOffSt = 1
 		} else {
-			log.Println("Light 0")
 			lcObj.State.LightOffSt = 0
 		}
 
 		// Flash
 		if lcdata[offsetIdx+delta+3]&0x02 > 0 {
-			log.Println("Flash 1")
 			lcObj.State.FlashSt = 1
 		} else {
-			log.Println("Flash 0")
 			lcObj.State.FlashSt = 0
 		}
 
 		// Door Status
 		if lcdata[offsetIdx+delta+3]&0x01 > 0 {
-			log.Println("Door 1")
 			lcObj.State.DoorSt = 1
 		} else {
-			log.Println("Door 0")
 			lcObj.State.DoorSt = 0
 		}
 

@@ -61,6 +61,7 @@ func initRouter() *gin.Engine {
 		r1.GET("/login", router.Login)                       // GET => /api1/login
 		r1.GET("/group", router.Group)                       // GET => /api1/group
 		r1.GET("/lc_state_summary", router.Lc_state_summary) // GET => /api1/lc_state_summary
+		r1.GET("/lc_event", router.Lc_event)                 // GET => /api1/lc_event
 	}
 
 	return r

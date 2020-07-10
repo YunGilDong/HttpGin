@@ -24,10 +24,6 @@ func Login(c *gin.Context) {
 	fmt.Println("Login")
 	global.DBlog.Write("main", "Login")
 
-	//InitDBSrc(user string, passwd string, dbName string, hostAddr string) {
-
-	// mdb := mariadb.InitDBSrc("dev", "dev", "sbrt_test", "192.168.1.74")
-
 	var sData []data.Group
 	ok, sData := mariadb.Mdb.GetGroup(sData)
 	if ok {
