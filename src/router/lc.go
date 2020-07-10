@@ -64,6 +64,7 @@ func Lc_event(c *gin.Context) {
 				ch_eventdata <- evdata
 				log.Println("changed")
 			} else {
+				ch_eventdata <- evdata
 				log.Println("not changed")
 			}
 			time.Sleep(time.Second * 1)
