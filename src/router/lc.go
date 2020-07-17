@@ -56,7 +56,7 @@ func Lc_event(c *gin.Context) {
 			// log.Println(b)         // [123 34 78 97 109 101 34 58 34 ...]
 			// log.Println(string(b)) // {"Name":"Gopher","Age":7}
 
-			evdata.message = "message"
+			evdata.message = "lcstatus"
 			evdata.data = string(b)
 			//log.Println(evdata.data)
 
@@ -64,7 +64,7 @@ func Lc_event(c *gin.Context) {
 				ch_eventdata <- evdata
 				log.Println("changed")
 			} else {
-				ch_eventdata <- evdata
+				//ch_eventdata <- evdata
 				log.Println("not changed")
 			}
 			time.Sleep(time.Second * 1)
@@ -75,7 +75,7 @@ func Lc_event(c *gin.Context) {
 	c.Stream(func(w io.Writer) bool {
 		if ev_msg, ok := <-ch_eventdata; ok {
 			switch ev_msg.message {
-			case "message":
+			case "lcstatus":
 
 				c.Render(-1, sse.Event{
 					Event: ev_msg.message,

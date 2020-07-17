@@ -9,14 +9,23 @@ import (
 	"io"
 	"log"
 	"mariadb"
+	"net/http"
 	"network"
 	"os"
+	"os/signal"
 	"router"
+	"syscall"
 	"time"
 	"trffic_obj"
 
 	"github.com/gin-gonic/gin"
+	"gopkg.in/antage/eventsource.v1"
 )
+
+type eventmessage struct {
+	messagetype string
+	data        string
+}
 
 //------------------------------------------------------------------------------
 // struct
@@ -28,6 +37,8 @@ type logFileManage struct {
 	dd  int
 	min int
 }
+
+var terminate bool
 
 //------------------------------------------------------------------------------
 // Local
@@ -44,27 +55,40 @@ var mlog genLib.OLog
 
 //------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+// sigHandler
+//------------------------------------------------------------------------------
+func sigHandler(chSig chan os.Signal) {
+	fmt.Println("sigHandler")
+	for {
+		signal := <-chSig
+		switch signal {
+		case syscall.SIGHUP:
+			fmt.Printf("SIGHUP(%d)\n", signal)
+			terminate = true
+			//panic(signal)
+		case syscall.SIGINT:
+			fmt.Printf("SIGINT(%d)\n", signal)
+			terminate = true
+			//panic(signal)
+		case syscall.SIGTERM:
+			fmt.Printf("SIGTERM(%d)\n", signal)
+			terminate = true
+			//panic(signal)
+		default:
+			fmt.Printf("Unknown signal(%d)\n", signal)
+			terminate = true
+			//panic(signal)
+		}
+	}
+}
+
 func LoggerFileCheck() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//println("LoggerFileCheck!")
 
 		c.Next()
 	}
-}
-
-func initRouter() *gin.Engine {
-	r := gin.Default()
-
-	r1 := r.Group("/api1")
-	r1.Use(LoggerFileCheck(), gin.Logger())
-	{
-		r1.GET("/login", router.Login)                       // GET => /api1/login
-		r1.GET("/group", router.Group)                       // GET => /api1/group
-		r1.GET("/lc_state_summary", router.Lc_state_summary) // GET => /api1/lc_state_summary
-		r1.GET("/lc_event", router.Lc_event)                 // GET => /api1/lc_event
-	}
-
-	return r
 }
 
 // none
@@ -133,23 +157,94 @@ func DbGetGroup() {
 
 }
 
+func handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hello!")
+}
+
+func initRoute2() {
+	http.Handle("/", http.FileServer(http.Dir("./public")))
+	http.HandleFunc("/group", router.Group)
+	http.HandleFunc("/login", handler)
+}
+
+func eventHandler(ch_eventdata chan eventmessage) {
+	for {
+		var evdata eventmessage
+		// check lc_state_summary
+		apiData, isChanged := trffic_obj.GetLcStateSummary()
+		b, _ := json.Marshal(apiData)
+		// log.Println(b)         // [123 34 78 97 109 101 34 58 34 ...]
+		// log.Println(string(b)) // {"Name":"Gopher","Age":7}
+
+		evdata.messagetype = "lcstatus"
+		evdata.data = string(b)
+		//log.Println(evdata.data)
+
+		if isChanged {
+			ch_eventdata <- evdata
+			log.Println("changed")
+		} else {
+			//ch_eventdata <- evdata
+			log.Println("not changed")
+		}
+		time.Sleep(time.Second * 1)
+	}
+}
+
+func evnetSend(es eventsource.EventSource) {
+	ch_eventdata := make(chan eventmessage)
+	go eventHandler(ch_eventdata)
+
+	for data := range ch_eventdata {
+		switch data.messagetype {
+		case "lcstatus":
+			es.SendEventMessage(data.data, "lcstatus", "1")
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
+// initSignal
+//------------------------------------------------------------------------------
+func initSignal() {
+	fmt.Println("iniSignal")
+	// signal handler
+	ch_signal := make(chan os.Signal, 1)
+	signal.Notify(ch_signal, syscall.SIGHUP, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGTERM)
+	go sigHandler(ch_signal)
+}
+
 func main() {
+	terminate = false
 	mlog := genLib.InitOLog("../log", "MAIN")
 	mlog.Write("main", "start")
 
 	initVariable()
 	initRoutine()
+	initSignal()
 
-	checkLogFile()
-	r := initRouter()
+	// event
+	var es eventsource.EventSource
+	es = eventsource.New(nil, nil)
+	defer es.Close()
 
-	defer func() {
-		println("main exit!")
+	http.Handle("/events", es)
+	go evnetSend(es)
+	initRoute2()
+	fmt.Println(">>>>>>1")
+	go func() {
+		http.ListenAndServe(":5000", nil)
 	}()
 
-	err := r.Run(":5000")
-	if err != nil {
-		println("Http run fail.. port 5000,,,")
+	fmt.Println(">>>>>>2")
+	for {
+		if terminate {
+			break
+		}
+
+		time.Sleep(time.Second * 2)
 	}
+
+	fmt.Println("exit")
 
 }
