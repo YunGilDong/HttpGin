@@ -1,10 +1,13 @@
 package router
 
 import (
+	"data"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
+	"mariadb"
+	"net/http"
 	"time"
 	"trffic_obj"
 
@@ -17,27 +20,56 @@ type eventData struct {
 	data    string
 }
 
-// get : /lc
-func Lc(c *gin.Context) {
-	println("Lc router!")
+// get : /local
+func Local(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Println("/Local")
 
-	fmt.Println("lc")
+	var sData []data.Loc
+	ok, sData := mariadb.Mdb.GetLocal(sData)
+	if ok {
+		for idx := 0; idx < len(sData); idx++ {
+			fmt.Println("ID : ", sData[idx].LOC_ID, "NM : ", sData[idx].LOC_NM)
+		}
+	}
 
-	c.JSON(200, gin.H{
-		"lc": "lc ok",
-	})
+	//var lcObj trffic_obj.LCobjects
+	lcObj := trffic_obj.GetLcObjectsValue()
+
+	for k, v := range lcObj.MapLc {
+		fmt.Println("@@>>> : ", k, v)
+		sData[k-1].State = v.State // 대입.. 임시방편
+	}
+
+	jsonBytes, err := json.Marshal(sData)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	jsonString := string(jsonBytes)
+	fmt.Println(jsonString)
+
+	json.NewEncoder(w).Encode(sData)
 }
 
 // get : /lc_state_summary
-func Lc_state_summary(c *gin.Context) {
+func Lc_state_summary(w http.ResponseWriter, r *http.Request) {
 	println("Lc_state_summary router!")
 
 	fmt.Println("Lc_state_summary")
 
 	apiData, _ := trffic_obj.GetLcStateSummary()
 
+	jsonBytes, err := json.Marshal(apiData)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	jsonString := string(jsonBytes)
+	fmt.Println(jsonString)
+
 	fmt.Println(apiData)
-	c.JSON(200, apiData)
+	json.NewEncoder(w).Encode(apiData)
 }
 
 // get : /lc_event

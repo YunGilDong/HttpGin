@@ -164,6 +164,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func initRoute2() {
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 	http.HandleFunc("/group", router.Group)
+	http.HandleFunc("/local", router.Local)
 	http.HandleFunc("/login", handler)
 }
 

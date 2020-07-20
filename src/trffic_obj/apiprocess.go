@@ -4,10 +4,10 @@ import (
 	"data"
 )
 
-var existLcSummary data.LcStateSummary
+var existLcSummary data.RLcStateSummary
 
 func initLcSummaray() {
-	existLcSummary = data.LcStateSummary{}
+	existLcSummary = data.RLcStateSummary{}
 
 	existLcSummary.LcCount = 0
 	existLcSummary.ScuFixCyc = 0
@@ -24,12 +24,12 @@ func initLcSummaray() {
 	existLcSummary.Conflict = 0
 }
 
-func GetLcStateSummary() (data.LcStateSummary, bool) {
+func GetLcStateSummary() (data.RLcStateSummary, bool) {
 	lcStats := GetLcObjectsValue() // 두번쨰 파라미터에 변화 여부 추가??
 
-	lcSummary := data.LcStateSummary{}
+	lcSummary := data.RLcStateSummary{}
 
-	lcSummary.LcCount = len(lcStats.mapLc)
+	lcSummary.LcCount = len(lcStats.MapLc)
 	lcSummary.ScuFixCyc = 0
 	lcSummary.LocalAct = 0
 	lcSummary.LocalNonAct = 0
@@ -40,8 +40,8 @@ func GetLcStateSummary() (data.LcStateSummary, bool) {
 
 	var comm, light, flash, door, conflict int = 0, 0, 0, 0, 0
 
-	for k, _ := range lcStats.mapLc {
-		lcObj := lcStats.mapLc[k]
+	for k, _ := range lcStats.MapLc {
+		lcObj := lcStats.MapLc[k]
 
 		if lcObj.State.CommSt == 1 {
 			comm++

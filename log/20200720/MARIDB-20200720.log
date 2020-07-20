@@ -1,0 +1,79 @@
+2020-07-20  16:48:43.809  GetGroup
+2020-07-20  16:48:43.817-  [GetLocal Query error(2)]sql: Scan error on column index 3, name "NODE_ID": converting NULL to string is unsupported
+2020-07-20  16:49:51.886  GetGroup
+2020-07-20  17:13:06.285  GetGroup
+2020-07-20  17:13:16.988  GetGroup
+2020-07-20  17:13:20.572  GetGroup
+2020-07-20  17:14:41.800  GetGroup
+2020-07-20  17:17:06.199  GetGroup
+2020-07-20  17:17:21.303  GetGroup
+2020-07-20  17:18:09.613  GetGroup
+2020-07-20  17:18:16.093  GetGroup
+2020-07-20  17:18:24.799  GetGroup
+2020-07-20  17:18:27.780  GetGroup
+2020-07-20  17:18:32.678  GetGroup
+2020-07-20  17:18:39.118  GetGroup
+2020-07-20  17:25:08.881  GetGroup
+2020-07-20  17:25:08.888-  [GetGroup Query error(1)]Error 1054: Unknown column 'AUTO_ONLINE' in 'field list'
+2020-07-20  17:25:08.993  GetGroup
+2020-07-20  17:25:09.001-  [GetGroup Query error(1)]Error 1054: Unknown column 'AUTO_ONLINE' in 'field list'
+2020-07-20  17:25:09.007  GetGroup
+2020-07-20  17:25:09.009-  [GetGroup Query error(1)]Error 1054: Unknown column 'AUTO_ONLINE' in 'field list'
+2020-07-20  17:25:09.020  GetGroup
+2020-07-20  17:25:09.022-  [GetGroup Query error(1)]Error 1054: Unknown column 'AUTO_ONLINE' in 'field list'
+2020-07-20  17:25:45.326  GetGroup
+2020-07-20  17:25:45.332-  [GetGroup Query error(1)]Error 1054: Unknown column 'AUTO_ONLINE' in 'field list'
+2020-07-20  17:29:04.043  GetGroup
+2020-07-20  17:29:04.049-  [GetGroup Query error(1)]Error 1054: Unknown column 'AUTO_ONLINE' in 'field list'
+2020-07-20  17:29:59.993  GetGroup
+2020-07-20  17:57:25.894  GetGroup
+2020-07-20  17:57:25.901  GetGroup
+2020-07-20  18:09:14.135  GetGroup
+2020-07-20  18:17:44.058  GetGroup
+2020-07-20  18:17:44.066  GetGroupState
+2020-07-20  18:17:54.494  GetGroup
+2020-07-20  18:17:54.503  GetGroupState
+2020-07-20  18:18:06.850  GetGroup
+2020-07-20  18:18:06.857  GetGroupState
+2020-07-20  18:21:43.239  GetGroup
+2020-07-20  18:21:43.246  GetGroupState
+2020-07-20  18:22:49.536  GetGroup
+2020-07-20  18:22:49.543  GetGroupState
+2020-07-20  18:23:46.355  GetGroup
+2020-07-20  18:23:46.360  GetGroupState
+2020-07-20  18:25:00.447  GetGroup
+2020-07-20  18:25:00.450  GetGroupState
+2020-07-20  18:25:25.762  GetGroup
+2020-07-20  18:25:25.766  GetGroupState
+2020-07-20  18:28:43.938  GetGroup
+2020-07-20  18:28:43.946  GetGroupState
+2020-07-20  18:46:27.806  GetGroup
+2020-07-20  18:46:27.816  GetGroupState
+2020-07-20  18:46:27.819  GetGroupOprState
+2020-07-20  18:46:46.235  GetGroup
+2020-07-20  18:46:46.241  GetGroupState
+2020-07-20  18:46:46.244  GetGroupOprState
+2020-07-20  18:46:47.288  GetGroup
+2020-07-20  18:46:47.298  GetGroupState
+2020-07-20  18:46:47.300  GetGroupOprState
+2020-07-20  18:46:48.083  GetGroup
+2020-07-20  18:46:48.095  GetGroupState
+2020-07-20  18:46:48.098  GetGroupOprState
+2020-07-20  18:46:48.666  GetGroup
+2020-07-20  18:46:48.680  GetGroupState
+2020-07-20  18:46:48.683  GetGroupOprState
+2020-07-20  18:46:49.157  GetGroup
+2020-07-20  18:46:49.174  GetGroupState
+2020-07-20  18:46:49.176  GetGroupOprState
+2020-07-20  18:46:49.619  GetGroup
+2020-07-20  18:46:49.636  GetGroupState
+2020-07-20  18:46:49.639  GetGroupOprState
+2020-07-20  18:46:50.083  GetGroup
+2020-07-20  18:46:50.097  GetGroupState
+2020-07-20  18:46:50.099  GetGroupOprState
+2020-07-20  18:46:50.525  GetGroup
+2020-07-20  18:46:50.542  GetGroupState
+2020-07-20  18:46:50.544  GetGroupOprState
+2020-07-20  18:46:50.999  GetGroup
+2020-07-20  18:46:51.012  GetGroupState
+2020-07-20  18:46:51.014  GetGroupOprState

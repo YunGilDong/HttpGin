@@ -140,9 +140,9 @@ func SetRxStatus(rxState int, readCount int) {
 
 func rxHandler(data []byte, length int) {
 
-	log.Println("rx(1)")
+	//log.Println("rx(1)")
 	global.Tcplog.Dump("RX", data, length)
-	log.Println("rx(2)")
+	//log.Println("rx(2)")
 	// check header
 	for idx := 0; idx < length; idx++ {
 
@@ -186,24 +186,24 @@ func rxHandler(data []byte, length int) {
 			requestCount := TcpClient.m_length - m_index
 			requestCount = minInt(requestCount, remainCount)
 
-			log.Println("(1) idx : ", idx, ">>midx : ", m_index, ">>", remainCount, requestCount)
+			//log.Println("(1) idx : ", idx, ">>midx : ", m_index, ">>", remainCount, requestCount)
 
 			lastIdx := idx + requestCount
 			TcpClient.m_data = append(TcpClient.m_data, data[idx:lastIdx]...)
 			SetRxStatus(RXST_DATA, requestCount)
 			idx += requestCount
-			log.Println("(2) idx : ", idx, ">>midx : ", TcpClient.m_index, ">>", remainCount, requestCount)
+			//log.Println("(2) idx : ", idx, ">>midx : ", TcpClient.m_index, ">>", remainCount, requestCount)
 
 			if TcpClient.m_index == TcpClient.m_length {
-				log.Println("msgH(1)")
+				//log.Println("msgH(1)")
 				msgHandler()
-				log.Println("msgH(2)")
+				//log.Println("msgH(2)")
 				SetRxStatus(RXST_STX, 0)
 			} else if TcpClient.m_index < TcpClient.m_length {
-				log.Println("(2)", TcpClient.m_index, TcpClient.m_length, "idx : ", idx)
+				//log.Println("(2)", TcpClient.m_index, TcpClient.m_length, "idx : ", idx)
 				continue
 			} else if TcpClient.m_index > TcpClient.m_length {
-				log.Println("(3)", TcpClient.m_index, TcpClient.m_length)
+				//log.Println("(3)", TcpClient.m_index, TcpClient.m_length)
 				SetRxStatus(RXST_STX, 0)
 				break
 			}
@@ -233,22 +233,22 @@ func processLcStatus() {
 	const STATE_DATA_IDX = LCPT_DATA + 2
 
 	for idx := 0; idx < datacount; idx++ {
-		lcObj := data.LC{}
+		lcObj := data.Loc{}
 
 		delta := 2 // id, group
 		offsetIdx := lcStateSize*idx + STATE_DATA_IDX
 
-		lcObj.LC_ID = int(lcdata[offsetIdx+0])
+		lcObj.LOC_ID = int(lcdata[offsetIdx+0])
 		lcObj.GRP_ID = int(lcdata[offsetIdx+1])
 
 		lcObj.State.OprMode = int(lcdata[offsetIdx+delta+0])
 
 		//id, group, opr, conflict, light, flash, doost, commst
 		// log.Printf(" id[%02X] grp[%02X] opr[%02X] status[%02X]   comm[%02X] "
-		// 	, lcObj.LC_ID, lcObj.GRP_ID	, lcdata[offsetIdx+delta+0], lcdata[offsetIdx+delta+3], lcdata[offsetIdx+delta+25])
+		// 	, lcObj.LOC_ID, lcObj.GRP_ID	, lcdata[offsetIdx+delta+0], lcdata[offsetIdx+delta+3], lcdata[offsetIdx+delta+25])
 
 		log.Printf(" id[%02X] grp[%02X] opr[%02X] status[%02X] comm[%02X]",
-			lcObj.LC_ID,
+			lcObj.LOC_ID,
 			lcObj.GRP_ID,
 			lcdata[offsetIdx+delta+0],
 			lcdata[offsetIdx+delta+3],

@@ -7,7 +7,7 @@ import (
 )
 
 type LCobjects struct {
-	mapLc map[int]data.LC // Lc map obejct
+	MapLc map[int]data.Loc // Lc map obejct
 }
 
 var lcobjs LCobjects
@@ -17,7 +17,7 @@ func InitLcObjects() {
 
 	log.Println("InitLcObjects")
 	lcobjs = LCobjects{}
-	lcobjs.mapLc = make(map[int]data.LC)
+	lcobjs.MapLc = make(map[int]data.Loc)
 
 	// create Lc Mutex
 	//lcMutex = &sync.Mutex()
@@ -25,21 +25,21 @@ func InitLcObjects() {
 
 func GetLcObjectsValue() LCobjects {
 	obj := lcobjs
-	obj.mapLc = make(map[int]data.LC)
+	obj.MapLc = make(map[int]data.Loc)
 
-	for k, v := range lcobjs.mapLc {
-		obj.mapLc[k] = v
+	for k, v := range lcobjs.MapLc {
+		obj.MapLc[k] = v
 	}
 
 	return obj
 }
 
-func SetLcObjecState(lcdata data.LC) {
+func SetLcObjecState(lcdata data.Loc) {
 	// 추후 뮤텍스 lock 필요할 수 있음
 	log.Println(lcdata)
-	id := lcdata.LC_ID
+	id := lcdata.LOC_ID
 	//log.Println(id, lcdata)
-	lcobjs.mapLc[id] = lcdata
+	lcobjs.MapLc[id] = lcdata
 
-	//log.Println(lcobjs.mapLc)
+	//log.Println(lcobjs.MapLc)
 }
