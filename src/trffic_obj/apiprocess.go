@@ -2,6 +2,7 @@ package trffic_obj
 
 import (
 	"data"
+	"fmt"
 )
 
 var existLcSummary data.RLcStateSummary
@@ -86,4 +87,85 @@ func GetLcStateSummary() (data.RLcStateSummary, bool) {
 	existLcSummary = lcSummary
 
 	return lcSummary, isChanged
+}
+
+func GetRGroup(grp data.Group) data.RGroup {
+	var rGrp data.RGroup
+	rGrp.GrpId = grp.GRP_ID
+	rGrp.GrpNm = grp.GRP_NM
+	rGrp.GrpLat = grp.GRP_LAT
+	rGrp.GrpLon = grp.GRP_LON
+	rGrp.GrpDefMode = grp.GRP_DEFCTRLMODE
+	rGrp.Status.CreateTm = grp.State.CREDATE
+	rGrp.Status.GrpCmode = grp.State.GRP_CTRLMODE
+	rGrp.Status.GrpCstatus = grp.State.GRP_CTRLSTATE
+	rGrp.Plan.Cycle = grp.OprState.NOW_GRP_CYCLELEN
+	rGrp.Plan.Mode = grp.OprState.GRP_CTRLMODE
+	rGrp.Plan.Offset = grp.OprState.NOW_LOC_OFFSETPLANIDX
+	rGrp.Plan.Split = grp.OprState.NOW_LOC_PHASEPLANIDX
+
+	return rGrp
+}
+
+func GetRLoc(locs data.Loc) data.RLoc {
+	var rLoc data.RLoc
+	fmt.Println(rLoc)
+
+	rLoc.LocId = locs.LOC_ID
+	rLoc.LocNm = locs.LOC_NM
+	rLoc.LocLat = locs.NODELAT
+	rLoc.LocLon = locs.NODELON
+	rLoc.GrpId = locs.GRP_ID
+	rLoc.Status.CommSt = locs.State.CommSt
+	rLoc.Status.ConflictSt = locs.State.CommSt
+	rLoc.Status.DoorSt = locs.State.DoorSt
+	rLoc.Status.FlashSt = locs.State.FlashSt
+	rLoc.Status.LightOffSt = locs.State.LightOffSt
+	rLoc.Status.OprMode = locs.State.OprMode
+
+	return rLoc
+}
+
+func GetGroupStatus(grp data.Group) data.RGroup {
+	rGrp := GetRGroup(grp)
+	rGrp.LocStatusCount = GetGroupLocStateSummary(rGrp.GrpId)
+
+	return rGrp
+}
+
+func GetGroupLocStateSummary(groupId int) string {
+	var comm, light, flash, door, conflict int = 0, 0, 0, 0, 0
+
+	lcStats := GetLcObjectsValue()
+
+	for k, _ := range lcStats.MapLc {
+		lcObj := lcStats.MapLc[k]
+
+		if lcObj.GRP_ID == groupId {
+			if lcObj.State.CommSt == 1 {
+				comm++
+			}
+
+			if lcObj.State.LightOffSt == 1 {
+				light++
+			}
+
+			if lcObj.State.FlashSt == 1 {
+				flash++
+			}
+
+			if lcObj.State.DoorSt == 1 {
+				door++
+			}
+
+			if lcObj.State.ConflictSt == 1 {
+				conflict++
+			}
+		}
+	}
+
+	var strStatus string = ""
+
+	strStatus = fmt.Sprintf("%d/%d/%d/%d/%d", comm, light, flash, door, conflict)
+	return strStatus
 }

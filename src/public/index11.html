@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script>
+var stream = new EventSource("/events");
+stream.addEventListener("message", function(e){
+    console.log(">>>")
+    console.log(e.data);
+});
+</script>    
+</body>
+</html>

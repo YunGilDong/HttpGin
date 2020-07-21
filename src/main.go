@@ -125,6 +125,21 @@ func initVariable() {
 	logMng.dd = 0
 
 	trffic_obj.InitLcObjects()
+	trffic_obj.InitGrpObject()
+}
+
+func initDatabase() {
+	// group database set
+	mData := make(map[int]*data.Group)
+	ok := mariadb.Mdb.GetGroup2(mData)
+
+	fmt.Println(mData)
+
+	if ok {
+		for _, v := range mData {
+			trffic_obj.SetGrpObject(*v)
+		}
+	}
 }
 
 func initRoutine() {
@@ -165,7 +180,9 @@ func initRoute2() {
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 	http.HandleFunc("/group", router.Group)
 	http.HandleFunc("/local", router.Local)
+	http.HandleFunc("/loading", router.Loading)
 	http.HandleFunc("/login", handler)
+
 }
 
 func eventHandler(ch_eventdata chan eventmessage) {
@@ -174,20 +191,48 @@ func eventHandler(ch_eventdata chan eventmessage) {
 		// check lc_state_summary
 		apiData, isChanged := trffic_obj.GetLcStateSummary()
 		b, _ := json.Marshal(apiData)
-		// log.Println(b)         // [123 34 78 97 109 101 34 58 34 ...]
-		// log.Println(string(b)) // {"Name":"Gopher","Age":7}
 
 		evdata.messagetype = "lcstatus"
 		evdata.data = string(b)
-		//log.Println(evdata.data)
 
+		// Total 현황 event
 		if isChanged {
 			ch_eventdata <- evdata
 			log.Println("changed")
 		} else {
-			//ch_eventdata <- evdata
 			log.Println("not changed")
 		}
+
+		// Local status event
+
+		// Group status event
+		groups := trffic_obj.GetGrpObjectValue()
+		for k, _ := range groups.MapGrp {
+			isChanged, groupObj := trffic_obj.CheckGrpStatus(k)
+			if isChanged {
+				apiGroupSts := trffic_obj.GetGroupStatus(groupObj)
+				b, _ := json.Marshal(apiGroupSts)
+				evdata.messagetype = "groupstatus"
+				evdata.data = string(b)
+				//log.Println(evdata.data)
+				ch_eventdata <- evdata
+				log.Println("group status changed")
+			}
+		}
+
+		// Local status event
+		select {
+		case lcState := <-trffic_obj.QuechLcState:
+			fmt.Println("lc statue event", lcState)
+			b, _ := json.Marshal(lcState)
+
+			evdata.messagetype = "lcstatusev"
+			evdata.data = string(b)
+			ch_eventdata <- evdata
+		default:
+
+		}
+
 		time.Sleep(time.Second * 1)
 	}
 }
@@ -197,10 +242,18 @@ func evnetSend(es eventsource.EventSource) {
 	go eventHandler(ch_eventdata)
 
 	for data := range ch_eventdata {
+		log.Println("event msg : ", data.messagetype)
 		switch data.messagetype {
 		case "lcstatus":
 			es.SendEventMessage(data.data, "lcstatus", "1")
+		case "groupstatus":
+			log.Println("groupstatus event!!@@@", data.data)
+			es.SendEventMessage(data.data, "groupstatus", "2")
+		case "lcstatusev":
+			log.Println("lcstatusev event!!@@@", data.data)
+			es.SendEventMessage(data.data, "lcstatusev", "3")
 		}
+
 	}
 }
 
@@ -221,12 +274,24 @@ func main() {
 	mlog.Write("main", "start")
 
 	initVariable()
+	initDatabase()
 	initRoutine()
 	initSignal()
 
 	// event
 	var es eventsource.EventSource
-	es = eventsource.New(nil, nil)
+
+	//es = eventsource.New(nil, nil)
+	es = eventsource.New(
+		eventsource.DefaultSettings(),
+		func(req *http.Request) [][]byte {
+			return [][]byte{
+				[]byte("X-Accel-Buffering: no"),
+				[]byte("Access-Control-Allow-Origin: *"),
+				[]byte("UTF-8"),
+			}
+		},
+	)
 	defer es.Close()
 
 	http.Handle("/events", es)

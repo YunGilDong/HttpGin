@@ -77,7 +77,7 @@ func (mdb *MariaDB) GetGroup(sData []data.Group) (bool, []data.Group) {
 	return true, sData
 }
 
-func (mdb *MariaDB) GetGroup2(sData map[int]*data.Group) (bool, map[int]*data.Group) {
+func (mdb *MariaDB) GetGroup2(sData map[int]*data.Group) bool {
 	fmt.Println("GetGroup")
 
 	dbSrc := mdb.user + ":" + mdb.passwd + "@tcp(" + mdb.hostAddr + ")/" + mdb.dbName
@@ -90,7 +90,7 @@ func (mdb *MariaDB) GetGroup2(sData map[int]*data.Group) (bool, map[int]*data.Gr
 	if err != nil {
 		fmt.Println(err.Error())
 		global.DBlog.Write("[DB Open error(1)]" + err.Error())
-		return false, sData
+		return false
 	}
 	defer db.Close()
 
@@ -118,7 +118,7 @@ func (mdb *MariaDB) GetGroup2(sData map[int]*data.Group) (bool, map[int]*data.Gr
 		if err != nil {
 			fmt.Println("[GetGroup Query error(2)]", err.Error())
 			global.DBlog.Write("[GetGroup Query error(2)]" + err.Error())
-			return false, sData
+			return false
 		}
 
 		// Return value
@@ -126,11 +126,13 @@ func (mdb *MariaDB) GetGroup2(sData map[int]*data.Group) (bool, map[int]*data.Gr
 		//sData = append(sData, grp)
 	}
 
-	return true, sData
+	return true
 }
 
-func (mdb *MariaDB) GetLocal(sData []data.Loc) (bool, []data.Loc) {
+func (mdb *MariaDB) GetLocal() (bool, []data.Loc) {
 	fmt.Println("GetLocal")
+
+	var sData []data.Loc
 
 	dbSrc := mdb.user + ":" + mdb.passwd + "@tcp(" + mdb.hostAddr + ")/" + mdb.dbName
 
@@ -181,8 +183,9 @@ func (mdb *MariaDB) GetLocal(sData []data.Loc) (bool, []data.Loc) {
 	return true, sData
 }
 
-func (mdb *MariaDB) GetGroupState(sData []data.GrpState) (bool, []data.GrpState) {
+func (mdb *MariaDB) GetGroupState() (bool, []data.GrpState) {
 	fmt.Println("GetGroupState")
+	var sData []data.GrpState
 
 	dbSrc := mdb.user + ":" + mdb.passwd + "@tcp(" + mdb.hostAddr + ")/" + mdb.dbName
 
@@ -231,8 +234,10 @@ func (mdb *MariaDB) GetGroupState(sData []data.GrpState) (bool, []data.GrpState)
 	return true, sData
 }
 
-func (mdb *MariaDB) GetGroupOprState(sData []data.GrpOprState) (bool, []data.GrpOprState) {
+func (mdb *MariaDB) GetGroupOprState() (bool, []data.GrpOprState) {
 	fmt.Println("GetGroupState")
+
+	var sData []data.GrpOprState
 
 	dbSrc := mdb.user + ":" + mdb.passwd + "@tcp(" + mdb.hostAddr + ")/" + mdb.dbName
 
@@ -283,4 +288,60 @@ func (mdb *MariaDB) GetGroupOprState(sData []data.GrpOprState) (bool, []data.Grp
 	}
 
 	return true, sData
+}
+
+func (mdb *MariaDB) GetGroupStateOprState(groupId int, grpState *data.GrpState, grpoprState *data.GrpOprState) bool {
+	fmt.Println("GetGroupStateOprState")
+
+	dbSrc := mdb.user + ":" + mdb.passwd + "@tcp(" + mdb.hostAddr + ")/" + mdb.dbName
+
+	// open
+	db, err := sql.Open("mysql", dbSrc)
+
+	global.DBlog.Write("DB", "GetGroupStateOprState")
+
+	if err != nil {
+		fmt.Println(err.Error())
+		global.DBlog.Write("[DB Open error(1)]" + err.Error())
+		return false
+	}
+	defer db.Close()
+
+	// Query
+	rows, err := db.Query(`SELECT B.GRP_ID
+								, B.CREDATE as CREDATE1
+								, B.GRP_CTRLMODE
+								, B.GRP_CTRLSTATE
+								, C.CREDATE as CREDATE2
+								, C.GRP_CTRLMODE
+								, C.GRP_CTRLSTATE
+								, C.NOW_GRP_CYCLELEN
+								, C.NOW_LOC_TIMEPLANNUM
+								, C.NOW_LOC_OFFSETPLANIDX
+								, C.NOW_LOC_PHASEPLANIDX
+							FROM GRP_MST A, GRP_STATE B, GRP_OPRSTATE C
+						WHERE A.GRP_ID = ?
+							AND A.GRP_ID = B.GRP_ID
+							AND A.GRP_ID = C.GRP_ID`, groupId)
+
+	if err != nil {
+		fmt.Println("[GetGroupStateOprState Query error(1)]", err.Error())
+		global.DBlog.Write("[GetGroupStateOprState Query error(1)]" + err.Error())
+	}
+
+	defer rows.Close()
+
+	if rows.Next() {
+
+		err := rows.Scan(&grpState.GRP_ID, &grpState.CREDATE, &grpState.GRP_CTRLMODE, &grpState.GRP_CTRLSTATE, &grpoprState.CREDATE, &grpoprState.GRP_CTRLMODE, &grpoprState.GRP_CTRLSTATE, &grpoprState.NOW_GRP_CYCLELEN, &grpoprState.NOW_LOC_TIMEPLANNUM, &grpoprState.NOW_LOC_OFFSETPLANIDX, &grpoprState.NOW_LOC_PHASEPLANIDX)
+
+		if err != nil {
+			fmt.Println("[GetGroupStateOprState Query error(2)]", err.Error())
+			global.DBlog.Write("[GetGroupStateOprState Query error(2)]" + err.Error())
+			return false
+		}
+	}
+
+	return true
+
 }

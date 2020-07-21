@@ -33,6 +33,19 @@ type GrpState struct {
 }
 
 //---------------------------------------------------------------------------
+// LOC (Local)
+//---------------------------------------------------------------------------
+type Loc struct {
+	LOC_ID  int
+	LOC_NM  string
+	GRP_ID  int
+	NODE_ID string
+	NODELAT string
+	NODELON string
+	State   LcState
+}
+
+//---------------------------------------------------------------------------
 // Group
 //---------------------------------------------------------------------------
 type Group struct {
@@ -45,17 +58,4 @@ type Group struct {
 	GRP_ZOMMLV      int
 	State           GrpState
 	OprState        GrpOprState
-}
-
-//---------------------------------------------------------------------------
-// LOC (Local)
-//---------------------------------------------------------------------------
-type Loc struct {
-	LOC_ID  int
-	LOC_NM  string
-	GRP_ID  int
-	NODE_ID string
-	NODELAT string
-	NODELON string
-	State   LcState
 }

@@ -5,15 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"mariadb"
-	"trffic_obj"
-
 	"net/http"
+	"trffic_obj"
 )
 
-// get : /group
-func Group(w http.ResponseWriter, r *http.Request) {
+func Loading(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	fmt.Println("/Group")
+	fmt.Println("/loading")
 
 	//var mData map[int]data.Group
 	mData2 := make(map[int]*data.Group)
@@ -49,17 +47,39 @@ func Group(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// GetLocal
-	_, locData := mariadb.Mdb.GetLocal()
+	// local
+	ok4, lcData := mariadb.Mdb.GetLocal()
+	if ok4 {
+		for idx := 0; idx < len(lcData); idx++ {
+			fmt.Println("ID : ", lcData[idx].LOC_ID, "NM : ", lcData[idx].LOC_NM)
+		}
+	}
+
 	//var lcObj trffic_obj.LCobjects
 	lcObj := trffic_obj.GetLcObjectsValue()
 
 	for k, v := range lcObj.MapLc {
 		fmt.Println("@@>>> : ", k, v)
-		locData[k-1].State = v.State // 대입.. 임시방편
+		lcData[k-1].State = v.State // 대입.. 임시방편
 	}
 
-	jsonBytes, err := json.Marshal(mData2)
+	// API
+	var rGroup []data.RGroup
+
+	for _, v := range mData2 {
+		rGrp := trffic_obj.GetRGroup(*v)
+		rGroup = append(rGroup, rGrp)
+	}
+
+	fmt.Println("lcData len : ", len(lcData))
+
+	for idx := 0; idx < len(lcData); idx++ {
+		rLc := trffic_obj.GetRLoc(lcData[idx])
+		id := rLc.GrpId - 1
+		rGroup[id].Locs = append(rGroup[id].Locs, rLc)
+	}
+
+	jsonBytes, err := json.Marshal(rGroup)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -67,5 +87,6 @@ func Group(w http.ResponseWriter, r *http.Request) {
 	jsonString := string(jsonBytes)
 	fmt.Println(jsonString)
 
-	json.NewEncoder(w).Encode(mData2)
+	json.NewEncoder(w).Encode(rGroup)
+
 }
