@@ -31,13 +31,14 @@ func GetLcStateSummary() (data.RLcStateSummary, bool) {
 	lcSummary := data.RLcStateSummary{}
 
 	lcSummary.LcCount = len(lcStats.MapLc)
-	lcSummary.ScuFixCyc = 0
-	lcSummary.LocalAct = 0
-	lcSummary.LocalNonAct = 0
-	lcSummary.CenterAct = 0
-	lcSummary.CenterNonAct = 0
+	lcSummary.ScuFixCyc = 1
+	lcSummary.LocalAct = 1
+	lcSummary.LocalNonAct = 2
+	lcSummary.CenterAct = 2
+	lcSummary.CenterNonAct = 2
 	lcSummary.KeepPhase = 0
 	lcSummary.ConflictImpossible = 0
+	lcSummary.Trans = 1
 
 	var comm, light, flash, door, conflict int = 0, 0, 0, 0, 0
 
@@ -93,8 +94,10 @@ func GetRGroup(grp data.Group) data.RGroup {
 	var rGrp data.RGroup
 	rGrp.GrpId = grp.GRP_ID
 	rGrp.GrpNm = grp.GRP_NM
-	rGrp.GrpLat = grp.GRP_LAT
-	rGrp.GrpLon = grp.GRP_LON
+	// rGrp.GrpLat = grp.GRP_LAT
+	// rGrp.GrpLon = grp.GRP_LON
+	rGrp.Position.X = grp.GRP_LAT
+	rGrp.Position.Y = grp.GRP_LON
 	rGrp.GrpDefMode = grp.GRP_DEFCTRLMODE
 	rGrp.Status.CreateTm = grp.State.CREDATE
 	rGrp.Status.GrpCmode = grp.State.GRP_CTRLMODE
@@ -113,8 +116,10 @@ func GetRLoc(locs data.Loc) data.RLoc {
 
 	rLoc.LocId = locs.LOC_ID
 	rLoc.LocNm = locs.LOC_NM
-	rLoc.LocLat = locs.NODELAT
-	rLoc.LocLon = locs.NODELON
+	rLoc.Position.X = locs.NODELAT
+	rLoc.Position.Y = locs.NODELON
+	// rLoc.LocLat = locs.NODELAT
+	// rLoc.LocLon = locs.NODELON
 	rLoc.GrpId = locs.GRP_ID
 	rLoc.Status.CommSt = locs.State.CommSt
 	rLoc.Status.ConflictSt = locs.State.CommSt
@@ -129,8 +134,24 @@ func GetRLoc(locs data.Loc) data.RLoc {
 func GetGroupStatus(grp data.Group) data.RGroup {
 	rGrp := GetRGroup(grp)
 	rGrp.LocStatusCount = GetGroupLocStateSummary(rGrp.GrpId)
+	rGrp.StrStatus = GetGroupOprStatusSummary(rGrp.GrpId)
 
 	return rGrp
+}
+
+func GetGroupOprStatusSummary(groupId int) string {
+
+	var strState string = ""
+	if groupId == 1 {
+		strState = "1/1"
+
+	} else if groupId == 2 {
+		strState = "3/3"
+
+	}
+
+	return strState
+
 }
 
 func GetGroupLocStateSummary(groupId int) string {

@@ -68,6 +68,8 @@ func Loading(w http.ResponseWriter, r *http.Request) {
 
 	for _, v := range mData2 {
 		rGrp := trffic_obj.GetRGroup(*v)
+		rGrp.StrStatus = trffic_obj.GetGroupOprStatusSummary(rGrp.GrpId)
+		rGrp.LocStatusCount = trffic_obj.GetGroupLocStateSummary(rGrp.GrpId)
 		rGroup = append(rGroup, rGrp)
 	}
 

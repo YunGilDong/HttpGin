@@ -16,6 +16,12 @@ type RLcStateSummary struct {
 	Conflict           int
 	DoorOpen           int
 	ConflictImpossible int
+	Trans              int
+}
+
+type RPosition struct {
+	X string
+	Y string
 }
 
 type RLocStatus struct {
@@ -32,9 +38,10 @@ type RLoc struct {
 	LocNm  string
 	GrpId  int
 	GrpOrd int
-	LocLat string
-	LocLon string
-	Status RLocStatus
+	// LocLat string
+	// LocLon string
+	Position RPosition
+	Status   RLocStatus
 }
 
 type RGrpPlan struct {
@@ -51,12 +58,14 @@ type RGrpStatus struct {
 }
 
 type RGroup struct {
-	GrpId          int
-	GrpNm          string
-	GrpLat         string
-	GrpLon         string
+	GrpId int
+	GrpNm string
+	// GrpLat         string
+	// GrpLon         string
+	Position       RPosition
 	GrpDefMode     int
 	Status         RGrpStatus
+	StrStatus      string
 	Plan           RGrpPlan
 	LocStatusCount string
 	Locs           []RLoc

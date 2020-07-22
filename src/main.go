@@ -223,8 +223,9 @@ func eventHandler(ch_eventdata chan eventmessage) {
 		// Local status event
 		select {
 		case lcState := <-trffic_obj.QuechLcState:
-			fmt.Println("lc statue event", lcState)
-			b, _ := json.Marshal(lcState)
+			rLocdata := trffic_obj.GetRLoc(lcState)
+			fmt.Println("lc statue event", rLocdata)
+			b, _ := json.Marshal(rLocdata)
 
 			evdata.messagetype = "lcstatusev"
 			evdata.data = string(b)
