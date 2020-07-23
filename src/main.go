@@ -198,27 +198,27 @@ func eventHandler(ch_eventdata chan eventmessage) {
 		// Total 현황 event
 		if isChanged {
 			ch_eventdata <- evdata
-			log.Println("changed")
+			log.Println("Total 현황 event changed")
 		} else {
-			log.Println("not changed")
+			//log.Println("not changed")
 		}
 
 		// Local status event
 
 		// Group status event
-		groups := trffic_obj.GetGrpObjectValue()
-		for k, _ := range groups.MapGrp {
-			isChanged, groupObj := trffic_obj.CheckGrpStatus(k)
-			if isChanged {
-				apiGroupSts := trffic_obj.GetGroupStatus(groupObj)
-				b, _ := json.Marshal(apiGroupSts)
-				evdata.messagetype = "groupstatus"
-				evdata.data = string(b)
-				//log.Println(evdata.data)
-				ch_eventdata <- evdata
-				log.Println("group status changed")
-			}
-		}
+		// groups := trffic_obj.GetGrpObjectValue()
+		// for k, _ := range groups.MapGrp {
+		// 	isChanged, groupObj := trffic_obj.CheckGrpStatus(k)
+		// 	if isChanged {
+		// 		apiGroupSts := trffic_obj.GetGroupStatus(groupObj)
+		// 		b, _ := json.Marshal(apiGroupSts)
+		// 		evdata.messagetype = "groupstatus"
+		// 		evdata.data = string(b)
+		// 		//log.Println(evdata.data)
+		// 		ch_eventdata <- evdata
+		// 		log.Println("group status changed")
+		// 	}
+		// }
 
 		// Local status event
 		select {
@@ -229,12 +229,15 @@ func eventHandler(ch_eventdata chan eventmessage) {
 
 			evdata.messagetype = "lcstatusev"
 			evdata.data = string(b)
+
+			log.Println("lc status changed")
+
 			ch_eventdata <- evdata
 		default:
 
 		}
 
-		time.Sleep(time.Second * 1)
+		time.Sleep(time.Millisecond * 10)
 	}
 }
 
@@ -246,12 +249,13 @@ func evnetSend(es eventsource.EventSource) {
 		log.Println("event msg : ", data.messagetype)
 		switch data.messagetype {
 		case "lcstatus":
+			log.Println("lcstatus event", data.data)
 			es.SendEventMessage(data.data, "lcstatus", "1")
 		case "groupstatus":
-			log.Println("groupstatus event!!@@@", data.data)
+			log.Println("groupstatus event", data.data)
 			es.SendEventMessage(data.data, "groupstatus", "2")
 		case "lcstatusev":
-			log.Println("lcstatusev event!!@@@", data.data)
+			log.Println("lcstatusev event", data.data)
 			es.SendEventMessage(data.data, "lcstatusev", "3")
 		}
 

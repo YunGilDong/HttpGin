@@ -221,6 +221,9 @@ func msgHandler() {
 		processLcStatus()
 	default:
 		log.Printf("Undefined opcode %02X", code)
+		logMsg := fmt.Sprintf("Undefined opcode %02X", code)
+		global.Tcplog.Write(logMsg)
+		resetRxStatus()
 
 	}
 
@@ -247,12 +250,12 @@ func processLcStatus() {
 		// log.Printf(" id[%02X] grp[%02X] opr[%02X] status[%02X]   comm[%02X] "
 		// 	, lcObj.LOC_ID, lcObj.GRP_ID	, lcdata[offsetIdx+delta+0], lcdata[offsetIdx+delta+3], lcdata[offsetIdx+delta+25])
 
-		log.Printf(" id[%02X] grp[%02X] opr[%02X] status[%02X] comm[%02X]",
-			lcObj.LOC_ID,
-			lcObj.GRP_ID,
-			lcdata[offsetIdx+delta+0],
-			lcdata[offsetIdx+delta+3],
-			lcdata[offsetIdx+delta+25])
+		// log.Printf(" id[%02X] grp[%02X] opr[%02X] status[%02X] comm[%02X]",
+		// 	lcObj.LOC_ID,
+		// 	lcObj.GRP_ID,
+		// 	lcdata[offsetIdx+delta+0],
+		// 	lcdata[offsetIdx+delta+3],
+		// 	lcdata[offsetIdx+delta+25])
 
 		// Conflict
 		if lcdata[offsetIdx+delta+3]&0x08 > 0 {

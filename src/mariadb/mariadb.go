@@ -15,6 +15,18 @@ type MariaDB struct {
 
 var Mdb *MariaDB = InitDBSrc("dev", "dev", "sbrt", "192.168.1.74")
 
+func NewDB() (*sql.DB, error) {
+	dbSrc := Mdb.user + ":" + Mdb.passwd + "@tcp(" + Mdb.hostAddr + ")/" + Mdb.dbName
+	db, err := sql.Open("mysql", dbSrc)
+	if err != nil {
+		return nil, err
+	}
+	if err = db.Ping(); err != nil {
+		return nil, err
+	}
+	return db, nil
+}
+
 func InitDBSrc(user string, passwd string, dbName string, hostAddr string) *MariaDB {
 	fmt.Println("InitDBSrc")
 	mdb := MariaDB{}
@@ -130,7 +142,7 @@ func (mdb *MariaDB) GetGroup2(sData map[int]*data.Group) bool {
 }
 
 func (mdb *MariaDB) GetLocal() (bool, []data.Loc) {
-	fmt.Println("GetLocal")
+	//fmt.Println("GetLocal")
 
 	var sData []data.Loc
 
@@ -184,7 +196,7 @@ func (mdb *MariaDB) GetLocal() (bool, []data.Loc) {
 }
 
 func (mdb *MariaDB) GetGroupState() (bool, []data.GrpState) {
-	fmt.Println("GetGroupState")
+	//fmt.Println("GetGroupState")
 	var sData []data.GrpState
 
 	dbSrc := mdb.user + ":" + mdb.passwd + "@tcp(" + mdb.hostAddr + ")/" + mdb.dbName
@@ -235,7 +247,7 @@ func (mdb *MariaDB) GetGroupState() (bool, []data.GrpState) {
 }
 
 func (mdb *MariaDB) GetGroupOprState() (bool, []data.GrpOprState) {
-	fmt.Println("GetGroupState")
+	//fmt.Println("GetGroupState")
 
 	var sData []data.GrpOprState
 
@@ -291,14 +303,14 @@ func (mdb *MariaDB) GetGroupOprState() (bool, []data.GrpOprState) {
 }
 
 func (mdb *MariaDB) GetGroupStateOprState(groupId int, grpState *data.GrpState, grpoprState *data.GrpOprState) bool {
-	fmt.Println("GetGroupStateOprState")
+	//fmt.Println("GetGroupStateOprState")
 
 	dbSrc := mdb.user + ":" + mdb.passwd + "@tcp(" + mdb.hostAddr + ")/" + mdb.dbName
 
 	// open
 	db, err := sql.Open("mysql", dbSrc)
 
-	global.DBlog.Write("DB", "GetGroupStateOprState")
+	//global.DBlog.Write("DB", "GetGroupStateOprState")
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -327,6 +339,8 @@ func (mdb *MariaDB) GetGroupStateOprState(groupId int, grpState *data.GrpState, 
 	if err != nil {
 		fmt.Println("[GetGroupStateOprState Query error(1)]", err.Error())
 		global.DBlog.Write("[GetGroupStateOprState Query error(1)]" + err.Error())
+		rows.Close()
+		return false
 	}
 
 	defer rows.Close()
